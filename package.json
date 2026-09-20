@@ -9,7 +9,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "node dev-server.js",
     "test": "node --test"
   },
   "devDependencies": {
