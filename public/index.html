@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FieldLog - talk, and it's logged</title>
+  <meta name="description" content="FieldLog is a hands-free voice logbook for technicians. Speak readings, findings and tasks; a structured report builds itself. Built on the AssemblyAI Voice Agent API.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f766e'/%3E%3Ccircle cx='50' cy='42' r='14' fill='white'/%3E%3Crect x='36' y='60' width='28' height='8' rx='4' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"></span>
+      <div>
+        <h1>FieldLog</h1>
+        <p class="tagline">Talk. It's logged.</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span id="limit" class="chip" hidden></span>
+      <span id="status-pill" class="pill" role="status" aria-live="polite">Not connected</span>
+    </div>
+  </header>
+
+  <div id="error-banner" class="banner" role="alert" hidden></div>
+
+  <main>
+    <section class="stage" aria-label="Voice controls">
+      <div id="orb" class="orb" data-state="idle" aria-hidden="true"></div>
+      <p id="activity" class="activity" aria-live="polite">Press start, allow the microphone, and begin talking.</p>
+      <div class="controls">
+        <label class="voice-label">Voice
+          <select id="voice-select" aria-label="Agent voice"></select>
+        </label>
+        <button id="start-btn" class="btn primary" type="button">Start inspection</button>
+        <button id="report-btn" class="btn" type="button">Report</button>
+        <button id="reset-btn" class="btn ghost" type="button">New inspection</button>
+      </div>
+      <div class="metrics" aria-label="Response time">
+        <span>Response time</span>
+        <strong id="latency-last">-</strong>
+        <span class="muted">last</span>
+        <strong id="latency-median">-</strong>
+        <span class="muted">median</span>
+      </div>
+    </section>
+
+    <section class="panel conversation" aria-label="Conversation">
+      <h2>Conversation</h2>
+      <div id="transcript" class="transcript" aria-live="polite"></div>
+      <p id="partial" class="partial" aria-hidden="true"></p>
+      <details class="hints">
+        <summary>Try saying</summary>
+        <ul>
+          <li>"Pump House 2, inspector Asha."</li>
+          <li>"P-204 bearing temperature is 82 degrees Celsius."</li>
+          <li>"P-204 vibration is 3 millimeters per second."</li>
+          <li>"There's a small oil leak at the P-204 seal, major."</li>
+          <li>"Replace the P-204 seal next week, high priority."</li>
+          <li>"Start a 10 minute cool-down timer."</li>
+          <li>"Scratch that." &nbsp;/&nbsp; "How are we doing?"</li>
+          <li>"That's all, finish the report."</li>
+        </ul>
+      </details>
+    </section>
+
+    <section class="panel logbook" aria-label="Live logbook">
+      <h2>Live logbook <span id="site-meta" class="muted"></span></h2>
+      <div id="timers" class="timers" aria-live="polite"></div>
+
+      <h3>Readings <span id="count-readings" class="count">0</span></h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Asset</th><th>Parameter</th><th>Value</th><th>Status</th></tr></thead>
+          <tbody id="readings-body"></tbody>
+        </table>
+      </div>
+
+      <h3>Findings <span id="count-findings" class="count">0</span></h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Asset</th><th>Observation</th><th>Severity</th></tr></thead>
+          <tbody id="findings-body"></tbody>
+        </table>
+      </div>
+
+      <h3>Tasks <span id="count-tasks" class="count">0</span></h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Asset</th><th>Action</th><th>Due</th><th>Priority</th></tr></thead>
+          <tbody id="tasks-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Built for the AssemblyAI Voice Agent Hackathon on the AssemblyAI Voice Agent API. Demo sessions are time-limited. Audio is processed by AssemblyAI; nothing is stored by this app.</p>
+  </footer>
+
+  <dialog id="report-dialog" aria-labelledby="report-title">
+    <div class="report" id="report-printable">
+      <h2 id="report-title">Inspection report</h2>
+      <div id="report-content"></div>
+    </div>
+    <div class="dialog-actions">
+      <button id="download-csv" class="btn primary" type="button">Download CSV</button>
+      <button id="print-report" class="btn" type="button">Print / save as PDF</button>
+      <button id="close-report" class="btn ghost" type="button">Close</button>
+    </div>
+  </dialog>
+
+  <noscript>FieldLog needs JavaScript and a microphone.</noscript>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
